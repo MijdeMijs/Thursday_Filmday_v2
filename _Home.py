@@ -7,7 +7,7 @@ import pandas as pd
 # Authentication
 
 # Load your YAML config
-with open('../auth_config.yaml') as file:
+with open('auth_config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
 # Create the authenticator object
