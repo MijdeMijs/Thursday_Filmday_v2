@@ -164,7 +164,7 @@ st.write(f"""
        you to the best options.
 """)
 
-# st.page_link("pages/1_🎬_Film_Chooser.py", label="Go to Film Chooser", icon="🎬")
+st.page_link("pages/1_Film_Chooser.py", label="Go to Film Chooser", icon="🎬")
 
 st.write("""
     2. **Movie Stats**: Dive into some fun statistics about all the movies 
