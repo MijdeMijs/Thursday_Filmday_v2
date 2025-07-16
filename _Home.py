@@ -210,3 +210,43 @@ st.write("""
 
     Enjoy your movie night and happy watching! :popcorn:
     """)
+
+# ===========
+# Footer
+# ===========
+
+# Custom CSS to adapt the footer to the browser's theme settings
+st.markdown("""
+    <style>
+    @media (prefers-color-scheme: dark) {
+        .footer {
+            background-color: #333333;
+            color: #FFFFFF;
+        }
+    }
+    @media (prefers-color-scheme: light) {
+        .footer {
+            background-color: #f9f9f9;
+            color: #6c757d;
+        }
+    }
+    .footer {
+             width: 100%;
+             text-align: center;
+             align-items: center;
+             padding: 5px 10px 5px 10px;
+             margin-top: 20px;
+             margin-bottom: 0px;
+             font-size: 14px;
+         }
+    </style>
+     <div class="footer">
+         <p>The Thursday Filmday app was made possible by Midas, the man who hesitated 
+            for so long about which movie to watch that he developed a movie app in the 
+            meantime - <a href="https://eelslap.com/" target="_blank">ADHD hyperfocus</a> - 
+            <a href="https://streamlit.io/" target="_blank">Streamlit</a> - 
+            <a href="https://developer.imdb.com/" target="_blank">IMDb Developer</a> and
+            a lot of <a href="https://chatgpt.com/" target="_blank">ChatGPT-4</a>
+         <p>&#128027; If you find any bugs, please report! &#128027;<p> 
+     </div>
+    """, unsafe_allow_html=True)
