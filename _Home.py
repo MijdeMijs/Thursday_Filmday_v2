@@ -7,8 +7,8 @@ import pandas as pd
 # Authentication
 
 # Load your YAML config
-with open('auth_config.yaml') as file:
-    config = yaml.load(file, Loader=SafeLoader)
+# with open('auth_config.yaml') as file:
+config = st.secrets["auth_config"]
 
 # Create the authenticator object
 authenticator = stauth.Authenticate(
