@@ -5,10 +5,16 @@ from yaml.loader import SafeLoader
 import pandas as pd
 
 # Authentication
+# Convert st.secrets["auth_config"] to a *real dict recursively*
+def convert_secrets_to_dict(secrets_obj):
+    if isinstance(secrets_obj, st.runtime.secrets.Secrets):
+        return {k: convert_secrets_to_dict(v) for k, v in secrets_obj.items()}
+    elif isinstance(secrets_obj, dict):
+        return {k: convert_secrets_to_dict(v) for k, v in secrets_obj.items()}
+    else:
+        return secrets_obj
 
-# Load your YAML config
-# with open('auth_config.yaml') as file:
-config = yaml.safe_load(yaml.dump(st.secrets["auth_config"]))
+config = convert_secrets_to_dict(st.secrets["auth_config"])
 
 # Create the authenticator object
 authenticator = stauth.Authenticate(
