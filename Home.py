@@ -3,49 +3,34 @@
 #===============
 import streamlit as st
 import streamlit_authenticator as stauth
+from utils.auth import get_authenticator
 import time
 import random
 
 #====================
 # Authentication
 #====================
+# Create the authenticator
+authenticator = get_authenticator()
 
-# Recursively convert st.secrets (AttrDict) to a normal dictionary
-def convert_attrdict_to_dict(attr_dict):
-    if isinstance(attr_dict, st.runtime.secrets.AttrDict):
-        return {k: convert_attrdict_to_dict(v) for k, v in attr_dict.items()}
-    elif isinstance(attr_dict, dict):
-        return {k: convert_attrdict_to_dict(v) for k, v in attr_dict.items()}
-    else:
-        return attr_dict
-
-# Use the converter to handle the secrets
-config = convert_attrdict_to_dict(st.secrets["auth_config"])
-
-# Create the authenticator object with the converted config
-authenticator = stauth.Authenticate(
-    config["credentials"],
-    config["cookie"]["name"],
-    config["cookie"]["key"],
-    config["cookie"]["expiry_days"],
-)
-
-# Login
+# Show the login widget
 try:
     authenticator.login()
 except Exception as e:
     st.error(e)
+    st.stop()
 
+# Check login status
 auth_status = st.session_state.get('authentication_status')
 
 if auth_status is False:
-    st.error('Username/password is incorrect')
+    st.error("Username/password is incorrect")
     st.stop()
 elif auth_status is None:
-    st.warning('Please enter your username and password')
+    st.warning("Please enter your username and password")
     st.stop()
 
-# Logout
+# If logged in, show logout in sidebar
 authenticator.logout(location="sidebar")
 
 #=============
