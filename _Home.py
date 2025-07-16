@@ -5,24 +5,31 @@ from yaml.loader import SafeLoader
 import pandas as pd
 
 # Authentication
-# Convert st.secrets["auth_config"] to a *real dict recursively*
-# Recursively convert st.secrets to a plain dict
-def convert_secrets_to_dict(secrets_obj):
-    if isinstance(secrets_obj, st.runtime.secrets.Secrets):
-        return {k: convert_secrets_to_dict(v) for k, v in secrets_obj.items()}
-    elif isinstance(secrets_obj, dict):
-        return {k: convert_secrets_to_dict(v) for k, v in secrets_obj.items()}
+# Recursively convert st.secrets (AttrDict) to a normal dictionary
+def convert_attrdict_to_dict(attr_dict):
+    if isinstance(attr_dict, st.runtime.secrets.AttrDict):
+        return {k: convert_attrdict_to_dict(v) for k, v in attr_dict.items()}
+    elif isinstance(attr_dict, dict):
+        return {k: convert_attrdict_to_dict(v) for k, v in attr_dict.items()}
     else:
-        return secrets_obj
+        return attr_dict
 
-# Use the converter
-config = convert_secrets_to_dict(st.secrets["auth_config"])
+# Use the converter to handle the secrets
+config = convert_attrdict_to_dict(st.secrets["auth_config"])
 
 # Debugging: Check the structure of the config
-st.write("Type of config:", type(config))
-st.write("Type of credentials:", type(config.get("credentials")))
-st.write("Type of usernames:", type(config["credentials"].get("usernames")))
+st.write("Type of config:", type(config))  # Should print <class 'dict'>
+st.write("Type of credentials:", type(config.get("credentials")))  # Should print <class 'dict'>
+st.write("Type of usernames:", type(config["credentials"].get("usernames")))  # Should print <class 'dict'>
 st.write("Complete config structure:", config)
+
+# Create the authenticator object with the converted config
+authenticator = stauth.Authenticate(
+    config["credentials"],
+    config["cookie"]["name"],
+    config["cookie"]["key"],
+    config["cookie"]["expiry_days"],
+)
 
 # Create the authenticator object
 # authenticator = stauth.Authenticate(
