@@ -50,7 +50,7 @@ elif auth_status is None:
     st.stop()
 
 # Logout
-authenticator.logout()
+authenticator.logout(location="sidebar")
 
 #=============
 # Sidebar
