@@ -35,5 +35,14 @@ except Exception as e:
 # elif authentication_status == None:
 #     st.warning('Please enter your username and password')
 
+if st.session_state.get('authentication_status'):
+    authenticator.logout()
+    st.write(f'Welcome *{st.session_state.get("name")}*')
+    st.title('Some content')
+elif st.session_state.get('authentication_status') is False:
+    st.error('Username/password is incorrect')
+elif st.session_state.get('authentication_status') is None:
+    st.warning('Please enter your username and password')
+
 if st.button("Press"):
     st.write("Hello world")
