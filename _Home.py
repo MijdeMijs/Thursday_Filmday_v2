@@ -26,23 +26,22 @@ try:
 except Exception as e:
     st.error(e)
 
-# if authentication_status:
-#     authenticator.logout('Logout', 'main')
-#     st.write(f'Welcome *{name}*')
-#     st.title('Some content')
-# elif authentication_status == False:
-#     st.error('Username/password is incorrect')
-# elif authentication_status == None:
-#     st.warning('Please enter your username and password')
+auth_status = st.session_state.get('authentication_status')
 
-if st.session_state.get('authentication_status'):
-    authenticator.logout()
-    st.write(f'Welcome *{st.session_state.get("name")}*')
-    st.title('Some content')
-elif st.session_state.get('authentication_status') is False:
+if auth_status is False:
     st.error('Username/password is incorrect')
-elif st.session_state.get('authentication_status') is None:
+    st.stop()
+elif auth_status is None:
     st.warning('Please enter your username and password')
+    st.stop()
+
+# If we reach here, the user is authenticated
+authenticator.logout()
+st.write(f'Welcome *{st.session_state.get("name")}*')
+st.title('Some content')
+
+# The rest of your app goes here
+st.write("Protected app content goes here.")
 
 if st.button("Press"):
     st.write("Hello world")
