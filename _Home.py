@@ -1,12 +1,8 @@
 #===============
-# Libraries
+# Imports
 #===============
-
 import streamlit as st
 import streamlit_authenticator as stauth
-
-import pandas as pd
-
 import time
 import random
 
@@ -172,7 +168,7 @@ st.title("Thursday Filmday :clapper::film_projector:")
 
 # Web page introduction
 st.write(f"""
-    Hi {st.session_state.get("name")}, welcome to **Thursday Filmday**! :clapper:
+    Hi **{st.session_state.get("name")}**, welcome to **Thursday Filmday**! :clapper:
 
     This app is designed to enhance your movie night experience with three 
     exciting sections:
