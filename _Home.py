@@ -19,7 +19,12 @@ authenticator = stauth.Authenticate(
 )
 
 # Render the login widget
-name, authentication_status, username = authenticator.login()
+# name, authentication_status, username = authenticator.login()
+
+try:
+    authenticator.login()
+except Exception as e:
+    st.error(e)
 
 if authentication_status:
     authenticator.logout('Logout', 'main')
