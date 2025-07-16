@@ -20,8 +20,7 @@ authenticator = stauth.Authenticate(
 
 # Render the login widget
 name, authentication_status, username = authenticator.login(
-    location="main",
-    form_name="Thursday Filmday Login"
+    fields={'Form name': "Login"}
 )
 
 if authentication_status:
