@@ -47,7 +47,7 @@ st.title("Thursday Filmday :clapper::film_projector:")
 
 # Web page introduction
 st.write(f"""
-    Hi {st.session_state.get("name")}, welcome to **Thursday Filmday**! 😊
+    Hi {st.session_state.get("name")}, welcome to **Thursday Filmday**! 🎬
 
     This app is designed to enhance your movie night experience with three 
     exciting sections:
