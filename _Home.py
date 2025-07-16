@@ -19,9 +19,7 @@ authenticator = stauth.Authenticate(
 )
 
 # Render the login widget
-name, authentication_status, username = authenticator.login(
-    fields={'Form name': "Login"}
-)
+name, authentication_status, username = authenticator.login()
 
 if authentication_status:
     authenticator.logout('Logout', 'main')
