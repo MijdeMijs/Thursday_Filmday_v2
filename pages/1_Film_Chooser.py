@@ -13,28 +13,28 @@ import sqlite3
 #====================
 # Authentication
 #====================
-# Create the authenticator
-authenticator = get_authenticator()
+# # Create the authenticator
+# authenticator = get_authenticator()
 
-# Show the login widget
-try:
-    authenticator.login()
-except Exception as e:
-    st.error(e)
-    st.stop()
+# # Show the login widget
+# try:
+#     authenticator.login()
+# except Exception as e:
+#     st.error(e)
+#     st.stop()
 
-# Check login status
-auth_status = st.session_state.get('authentication_status')
+# # Check login status
+# auth_status = st.session_state.get('authentication_status')
 
-if auth_status is False:
-    st.error("Username/password is incorrect")
-    st.stop()
-elif auth_status is None:
-    st.warning("Please enter your username and password")
-    st.stop()
+# if auth_status is False:
+#     st.error("Username/password is incorrect")
+#     st.stop()
+# elif auth_status is None:
+#     st.warning("Please enter your username and password")
+#     st.stop()
 
-# If logged in, show logout in sidebar
-authenticator.logout(location="sidebar")
+# # If logged in, show logout in sidebar
+# authenticator.logout(location="sidebar")
 
 #=============
 # Sidebar
@@ -43,109 +43,102 @@ authenticator.logout(location="sidebar")
 # Sidebar: Random Film Button
 st.sidebar.title("Random Film Generator")
 
-st.sidebar.write("Can't decide what to watch? Let our Random Film Generator choose for you! Click the button and get a film title, IMDb rating, and duration. Enjoy your movie night! 🍿🎥")
+st.sidebar.write("""Can't decide what to watch? Let our Random Film Generator 
+                 choose for you! Click the button and let faith decide!
+                 Enjoy your movie night! 🍿🎥""")
 
-if st.sidebar.button("Generate random film!"):
-    # Check if the data is ready
-    if "filtered_data" in st.session_state:
-        # Sample one row
-        random_row = st.session_state["filtered_data"].sample(1)
+if st.sidebar.button("Random film!"):
+    def random_film ():
+        conn = sqlite3.connect("data/film_database.db")
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT *
+            FROM film_data
+            ORDER BY RANDOM()
+            LIMIT 1
+        """)
+        random_choice = cursor.fetchone()
+        conn.close()
+        return random_choice
 
-        # Extract the required data
-        random_film = random_row["Film"].iloc[0]
-        random_rating = random_row["IMDb Rating"].iloc[0]
-        random_duration = random_row["Duration"].iloc[0]
-        random_year = random_row["Year"].iloc[0]
-        random_ID = random_row["ID"].iloc[0]
+    # Run random_film()
+    random_movie = random_film()
 
-        # List of funny texts
-        funny_texts = [
-            "Reading your aura...",
-            "Taming a monkey...",
-            "Brewing some coffee...",
-            "Counting stars...",
-            "Feeding the unicorns...",
-            "Polishing the pixels...",
-            "Summoning good vibes...",
-            "Tickling the code...",
-            "Charging the flux capacitor...",
-            "Aligning the planets...",
-            "Petting the cat...",
-            "Warming up the servers...",
-            "Finding Waldo...",
-            "Herding cats...",
-            "Sharpening pencils...",
-            "Calibrating the matrix...",
-            "Baking cookies...",
-            "Inflating balloons...",
-            "Painting rainbows...",
-            "Hacking the mainframe...",
-            "Teleporting data...",
-            "Tickling the electrons...",
-            "Spinning up the hamster wheel...",
-            "Inflating the internet...",
-            "Waking up the servers...",
-            "Unleashing the magic...",
-            "Mixing the potions...",
-            "Charging the crystals...",
-            "Consulting the oracle...",
-            "Tuning the algorithms...",
-            "Rebooting the matrix...",
-            "Casting spells...",
-            "Brewing the potion...",
-            "Hunting for Easter eggs...",
-            "Rewiring the circuits...",
-            "Synchronizing the clocks...",
-            "Lubricating the gears...",
-            "Recalibrating the sensors...",
-            "Recharging the batteries...",
-            "Assembling the pixels..."
-        ]
+    # List of funny texts
+    funny_texts = [
+        "Reading your aura...",
+        "Taming a monkey...",
+        "Brewing some coffee...",
+        "Counting stars...",
+        "Feeding the unicorns...",
+        "Polishing the pixels...",
+        "Summoning good vibes...",
+        "Tickling the code...",
+        "Charging the flux capacitor...",
+        "Aligning the planets...",
+        "Petting the cat...",
+        "Warming up the servers...",
+        "Finding Waldo...",
+        "Herding cats...",
+        "Sharpening pencils...",
+        "Calibrating the matrix...",
+        "Baking cookies...",
+        "Inflating balloons...",
+        "Painting rainbows...",
+        "Hacking the mainframe...",
+        "Teleporting data...",
+        "Tickling the electrons...",
+        "Spinning up the hamster wheel...",
+        "Inflating the internet...",
+        "Waking up the servers...",
+        "Unleashing the magic...",
+        "Mixing the potions...",
+        "Charging the crystals...",
+        "Consulting the oracle...",
+        "Tuning the algorithms...",
+        "Rebooting the matrix...",
+        "Casting spells...",
+        "Brewing the potion...",
+        "Hunting for Easter eggs...",
+        "Rewiring the circuits...",
+        "Synchronizing the clocks...",
+        "Lubricating the gears...",
+        "Recalibrating the sensors...",
+        "Recharging the batteries...",
+        "Assembling the pixels..."
+    ]
 
-        # Randomly choose a funny text
-        progress_text = random.choice(funny_texts)
+    # Randomly choose a funny text
+    progress_text = random.choice(funny_texts)
 
-        # Create a progress bar
-        my_bar = st.sidebar.progress(0)
-        
-        # Randomly choose a duration between 0.1 and 2 seconds
-        duration = random.uniform(0.1, 2)
+    # Create a progress bar
+    my_bar = st.sidebar.progress(0)
+       
+    # Randomly choose a duration between 0.1 and 2 seconds
+    duration = random.uniform(0.1, 1.5)
 
-        # Calculate the sleep time per iteration
-        sleep_time = duration / 100
+    # Calculate the sleep time per iteration
+    sleep_time = duration / 100
 
-        for percent_complete in range(100):
-            time.sleep(sleep_time)
-            my_bar.progress(percent_complete + 1, text=progress_text)
+    for percent_complete in range(100):
+        time.sleep(sleep_time)
+        my_bar.progress(percent_complete + 1, text=progress_text)
 
-        time.sleep(1)
-        my_bar.empty()
-        
-        st.sidebar.write(f'''
-                         Maybe you'd like to watch **{random_film}**?
-                         
-                         **Rating: {random_rating.round(1)} | 
-                         Duration: {int(random_duration)}** |
-                         **Year: {int(random_year)}**
-                         ''')
-        
-        # Define IMDb URL
-        random_url = f'https://www.imdb.com/title/{random_ID}/'
+    time.sleep(1)
+    my_bar.empty()
 
-        st.sidebar.link_button('Visit IMDb page!', random_url)
+    st.sidebar.write(f'''
+                     Maybe you'd like to watch **{random_movie[2]}**?
+                     
+                     **Rating: {random_movie[38]} | 
+                     Duration: {random_movie[4]} min.** |
+                     **Year: {random_movie[3]}**
+                     ''')
 
-    else:
-        # Centered warning text using Markdown and CSS
-        st.sidebar.markdown(
-            """
-            <div style="text-align: center; background-color: #FFA726; padding: 10px; border: 1px solid #ffa500; border-radius: 5px; color: black;">
-                <strong>⚠️ First select filters! ⚠️</strong>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.sidebar.write('')
-        # st.sidebar.page_link("pages/1_🎬_Film_Chooser.py", label="Go to Film Chooser", icon="🎬")
+    # Define IMDb URL
+    random_url = f'https://www.imdb.com/title/{random_movie[0]}/'
+
+    st.sidebar.link_button('Visit IMDb page!', random_url)
 
 #========================
 # Film Chooser intro
@@ -240,20 +233,16 @@ st.write('''
 	 ''')    
 
 #=================
-# Save button
+# Save toggle
 #=================
 
 # Initialize session state if not already done
-if 'save_filters' not in st.session_state:
-    st.session_state.save_filters = 0
+if 'save_filters2' not in st.session_state:
+    st.session_state.save_filters2 = True
 
 # Toggle button with session state
-if st.toggle('Forget/Save', key='toggle', value=st.session_state.save_filters):
-    st.session_state.save_filters = 1
-else:
-    st.session_state.save_filters = 0
-
-save_filters = st.session_state.save_filters
+save_toggle = st.toggle("Save filters", key="toggle2", value=st.session_state.save_filters2)
+st.session_state.save_filters2 = save_toggle
 
 #=====================
 # Genre selection
@@ -265,17 +254,22 @@ st.write('**Genre:**')
 # AND/OR jack in the box
 #============================
 
-# Define AND_OR operator
 def AND_OR():
-    if st.toggle('AND/OR operator'):
-        operator = 1
+    # Check if "operator" is in session state, else default to AND (0)
+    if 'operator' not in st.session_state:
+        st.session_state.operator = 0  # Default to AND
+
+    # Check the toggle state
+    if st.toggle('AND/OR operator', key='and_or_toggle', value=st.session_state.operator == 1):
+        st.session_state.operator = 1  # OR operator
         st.write('''**OR** operator is selected to pass your genres. Notice that this 
-                 could give :red[**less precise**], but :red[**more movie options**]!''')
+                    could give :red[**less precise**], but :red[**more movie options**]!''')
     else:
-        operator = 0
+        st.session_state.operator = 0  # AND operator
         st.write('''**AND** operator is selected to pass your genres. Notice that this 
-                 could give :red[**more precise**], but :red[**fewer movie options**]!''')
-    return operator
+                    could give :red[**more precise**], but :red[**fewer movie options**]!''')
+
+    return st.session_state.operator
 
 #================
 # Genre list
@@ -306,33 +300,36 @@ def genre_list():
 # Run genre list
 all_genres = genre_list()
 
-# ===============================
-# region Main genre
-# ===============================
+#===============================
+# Main genre
+#===============================
 
-if save_filters == 1:
-    if 'selected_main_genre' not in st.session_state:
-        st.session_state['selected_main_genre'] = all_genres[0]
+if save_toggle:
+    # Use saved value or default
+    default_genre = st.session_state.get("selected_main_genre", all_genres[0])
 
-    def save_main_genre():
-         st.session_state['selected_main_genre'] = st.session_state['key_main_genre']
+    # Display selectbox
+    main_genre = st.selectbox(
+        "Main genre:",
+        all_genres,
+        index=all_genres.index(default_genre)
+    )
 
-    main_genre = st.selectbox('Main genre:', all_genres,
-                              key='key_main_genre',
-                              index=all_genres.index(st.session_state['selected_main_genre']),
-                              on_change=save_main_genre)
+    # Save selected genre into session state manually
+    st.session_state.selected_main_genre = main_genre
+
 else:
-    main_genre = st.selectbox('Main genre:', all_genres)
+    main_genre = st.selectbox("Main genre:", all_genres)
 
 #========================
 # Genre if-statement
 #========================
 
-# Initialize session state
-if 'selected_other_genres' not in st.session_state:
+# Only define state if saving is on
+if save_toggle and "selected_other_genres" not in st.session_state:
     st.session_state['selected_other_genres'] = []
 
-# Define a callback function to update session state
+# Callback to update session state for multiselect
 def save_other_genres():
     st.session_state['selected_other_genres'] = st.session_state['key_other_genres']
 
@@ -347,32 +344,35 @@ def process_genre_selection(main_genre, genres, save):
         pass
     else:
         genre_options = [
-            genre for genre in genres if genre not in ["No preference for any genre...", 
-                                                       "No preference for a main genre..."]
+            genre for genre in genres if genre not in [
+                "No preference for any genre...", 
+                "No preference for a main genre..."
+            ]
         ]
+
         if main_genre != "No preference for a main genre...":
-            genre_options = [genre for genre in genre_options if genre != main_genre]
+            genre_options = [g for g in genre_options if g != main_genre]
             max_genres = 2
             genre_tag = 2
         else:
             max_genres = 3
             genre_tag = 1
 
-        if save == 1:
+        if save:
             other_genres = st.multiselect(
-            f"Select a maximum of **{max_genres}** genre(s):",
-            options=genre_options,
-            default=st.session_state['selected_other_genres'],
-            key='key_other_genres',
-            on_change=save_other_genres)
-
+                f"Select a maximum of **{max_genres}** genre(s):",
+                options=genre_options,
+                default=st.session_state.get('selected_other_genres', []),
+                key='key_other_genres',
+                on_change=save_other_genres
+            )
             genre_selection = other_genres.copy()
             operator = AND_OR()
         else:
             other_genres = st.multiselect(
-            f"Select a maximum of **{max_genres}** genre(s):",
-            options=genre_options)
-
+                f"Select a maximum of **{max_genres}** genre(s):",
+                options=genre_options
+            )
             genre_selection = other_genres.copy()
             operator = AND_OR()
 
@@ -380,7 +380,7 @@ def process_genre_selection(main_genre, genres, save):
 
 (genre_options, other_genres, 
  genre_selection, operator, 
- genre_tag) = process_genre_selection(main_genre, all_genres, save_filters)
+ genre_tag) = process_genre_selection(main_genre, all_genres, save_toggle)
 
 #==================
 # Check length
@@ -437,38 +437,88 @@ votes_step_size = 500
 # Filter sliders 
 #====================
 
-# year slider
+# === Year Slider ===
 st.write('**Year:**')
+if save_toggle and "selected_years" in st.session_state:
+    default_years = st.session_state.selected_years
+else:
+    default_years = (default_min_year, default_max_year)
+
 selected_years = st.slider("Range of years in which a film went into premiere:", 
-                   min_year, max_year,
-                   (default_min_year, default_max_year),
-                   step=1)
+                           min_year, max_year,
+                           default_years,
+                           step=1)
+
+# Save only if toggle is ON
+if save_toggle:
+    st.session_state.selected_years = selected_years
+
 st.divider()
 
-# time slider 
+# === Duration Slider ===
 st.write('**Duration:**')
+if save_toggle and "selected_time" in st.session_state:
+    default_time = st.session_state.selected_time
+else:
+    default_time = (default_min_time, default_max_time)
+
 selected_time = st.slider("Range of film duration in minutes:", 
-                  min_time, max_time,
-                  (default_min_time, default_max_time),
-                  step=5)
+                          min_time, max_time,
+                          default_time,
+                          step=5)
+
+if save_toggle:
+    st.session_state.selected_time = selected_time
+
 st.divider()
 
-# ratings slider 
+# === Rating Slider ===
 st.write('**Rating:**')
+if save_toggle and "selected_rating" in st.session_state:
+    default_rating = st.session_state.selected_rating
+else:
+    default_rating = (default_min_rating, default_max_rating)
+
 selected_rating = st.slider("Range of film IMDb ratings:", 
-                    min_value=min_rating,
-                    max_value=max_rating,
-                    value=(default_min_rating, default_max_rating),
-                    step=ratings_step_size,
-                    format="%.1f")
+                            min_value=min_rating,
+                            max_value=max_rating,
+                            value=default_rating,
+                            step=ratings_step_size,
+                            format="%.1f")
+
+if save_toggle:
+    st.session_state.selected_rating = selected_rating
+
 st.divider()
 
-# votes slider
+# === Votes Slider ===
 st.write('**Votes:**')
+if save_toggle and "selected_votes" in st.session_state:
+    default_votes = st.session_state.selected_votes
+else:
+    default_votes = default_min_votes
+
 selected_votes = st.slider("Minimum number of votes for the IMDb film rating:", 
-                   min_votes, max_votes, 
-                   default_min_votes,
-                   step=votes_step_size)
+                           min_votes, max_votes,
+                           default_votes,
+                           step=votes_step_size)
+
+if save_toggle:
+    st.session_state.selected_votes = selected_votes
+
+#==================
+# Reset botton
+#==================
+
+# if st.button("🔄 Reset filters"):
+#     st.session_state.selected_main_genre = all_genres[0]
+#     st.session_state.selected_other_genres = []
+#     st.session_state.selected_years = (default_min_year, default_max_year)
+#     st.session_state.selected_time = (default_min_time, default_max_time)
+#     st.session_state.selected_rating = (default_min_rating, default_max_rating)
+#     st.session_state.selected_votes = default_min_votes
+
+#     st.rerun() 
 
 # =====================
 # Film Suggestions
@@ -476,24 +526,61 @@ selected_votes = st.slider("Minimum number of votes for the IMDb film rating:",
 
 st.subheader('Film Suggestions', divider='violet')
 
+left_column, right_column = st.columns(2)
+
+with left_column:
+    top_n_choice = st.selectbox('Top tier list:', ['Top 100', 
+                                                   'Top 250', 
+                                                   'Top 500',
+                                                   'All'])
+
+    top_n_mapping = {
+        'Top 100': 100,
+        'Top 250': 250,
+        'Top 500': 500,
+        'All': None
+    }
+    top_n = top_n_mapping[top_n_choice]
+
+with right_column:
+    # Select on column display_df is sorted
+        sort_film_df = st.selectbox("Select a movie feature:", ["IMDb rating", 
+                                                                "Year",
+                                                                "Duration",
+                                                                "Votes"])
+        
+        sort_mapping = {
+            'IMDb rating': 'averageRating',
+            'Year': 'startYear',
+            'Duration': 'runtimeMinutes',
+            'Votes': 'numVotes'
+        }
+        sort_column = sort_mapping[sort_film_df]
+
+sort_ascending = st.toggle('Descending/ascending', value=False)
+
+st.divider()
+
 #============================
 # Define & apply filters
 #============================
 
-@st.cache_data
+# @st.cache_data
 def film_data_filter(selected_years, 
-                    selected_time, 
-                    selected_rating, 
-                    selected_votes,
-                    genre_tag, 
-                    main_genre, 
-                    operator, 
-                    genre_selection):
+                     selected_time, 
+                     selected_rating, 
+                     selected_votes,
+                     genre_tag, 
+                     main_genre, 
+                     operator, 
+                     genre_selection,
+                     sort_column,
+                     top_n):
 
     conn = sqlite3.connect("data/film_database.db")
     cursor = conn.cursor()
 
-    # Start SQL query
+    # Base query
     query = """
         SELECT * FROM film_data
         WHERE 
@@ -509,12 +596,11 @@ def film_data_filter(selected_years,
         selected_votes
     ]
 
-    # Add main_genre filter if requested
+    # Optional genre filters
     if genre_tag == 2:
         query += " AND main_genre = ?"
         params.append(main_genre)
 
-    # Add genre column filters
     if genre_tag != 0 and genre_selection:
         if operator == 0:  # AND
             for genre in genre_selection:
@@ -523,20 +609,28 @@ def film_data_filter(selected_years,
             genre_conditions = " OR ".join([f"{genre} = 1" for genre in genre_selection])
             query += f" AND ({genre_conditions})"
 
-    # Run query
+    # Add ORDER BY and LIMIT
+    order = "ASC" if sort_ascending else "DESC"
+    query += f" ORDER BY {sort_column} {order}"
+
+    if top_n is not None:
+        query += " LIMIT ?"
+        params.append(top_n)
+
     df = pd.read_sql_query(sql=query, con=conn, params=params)
     conn.close()
-
     return df    
 
 filtered_filma_data = film_data_filter(selected_years, 
-                    selected_time, 
-                    selected_rating, 
-                    selected_votes,
-                    genre_tag, 
-                    main_genre, 
-                    operator, 
-                    genre_selection)
+                                       selected_time, 
+                                       selected_rating, 
+                                       selected_votes,
+                                       genre_tag, 
+                                       main_genre, 
+                                       operator, 
+                                       genre_selection,
+                                       sort_column,
+                                       top_n)
 
 #=============================
 # Display filtered movies
@@ -567,7 +661,7 @@ if (genre_tag == 1 and len(genre_selection) > 3) or (genre_tag == 2 and len(genr
 elif display_df.empty:
     st.error('No movies found within the boundaries of the chosen filters!')
 else:
-    st.write(f'Found **{len(display_df)}** films within your chosen filters:')
+    st.write(f'Behold! **{len(display_df)}** films that are within your chosen filters:')
     st.dataframe(display_df.iloc[:, 1:])            
 
 # ===============================
@@ -579,3 +673,63 @@ if main_genre in ['No preference for any genre...',
     if not genre_selection:
         st.markdown(f'''<span style="font-size: 13px;">:red[***Notice!** 
                     No filter was applied on genre!*]</span>''', unsafe_allow_html=True) 
+
+#=====================
+# Visit IMDb page
+#=====================
+
+st.divider()
+
+# Select a movie
+IMDb_link = st.selectbox("Select film:", display_df['Film'].unique())
+        
+# Get film ID
+ID = display_df[display_df['Film'] == IMDb_link].iloc[0, 0]
+
+# Define IMDb URL
+url = f'https://www.imdb.com/title/{ID}/'
+
+# Link button in first column
+st.link_button("Visit IMDb page!", url)
+
+# ===========
+# Footer
+# ===========
+
+st.divider()
+
+# Custom CSS to adapt the footer to the browser's theme settings
+st.markdown("""
+    <style>
+    @media (prefers-color-scheme: dark) {
+        .footer {
+            background-color: #333333;
+            color: #FFFFFF;
+        }
+    }
+    @media (prefers-color-scheme: light) {
+        .footer {
+            background-color: #f9f9f9;
+            color: #6c757d;
+        }
+    }
+    .footer {
+             width: 100%;
+             text-align: center;
+             align-items: center;
+             padding: 5px 10px 5px 10px;
+             margin-top: 20px;
+             margin-bottom: 0px;
+             font-size: 14px;
+         }
+    </style>
+     <div class="footer">
+         <p>The Thursday Filmday app was made possible by Midas, the man who hesitated 
+            so long to choose a movie that he developed a movie app in the 
+            meantime - <a href="https://eelslap.com/" target="_blank">ADHD hyperfocus</a> - 
+            <a href="https://streamlit.io/" target="_blank">Streamlit</a> - 
+            <a href="https://developer.imdb.com/" target="_blank">IMDb Developer</a> and
+            a lot of <a href="https://chatgpt.com/" target="_blank">ChatGPT-4</a>
+         <p>&#128027; If you find any bugs, please report! &#128027;<p> 
+     </div>
+    """, unsafe_allow_html=True)

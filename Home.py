@@ -4,34 +4,35 @@
 import streamlit as st
 import streamlit_authenticator as stauth
 from utils.auth import get_authenticator
+import sqlite3
 import time
 import random
 
 #====================
 # Authentication
 #====================
-# Create the authenticator
-authenticator = get_authenticator()
+# # Create the authenticator
+# authenticator = get_authenticator()
 
-# Show the login widget
-try:
-    authenticator.login()
-except Exception as e:
-    st.error(e)
-    st.stop()
+# # Show the login widget
+# try:
+#     authenticator.login()
+# except Exception as e:
+#     st.error(e)
+#     st.stop()
 
-# Check login status
-auth_status = st.session_state.get('authentication_status')
+# # Check login status
+# auth_status = st.session_state.get('authentication_status')
 
-if auth_status is False:
-    st.error("Username/password is incorrect")
-    st.stop()
-elif auth_status is None:
-    st.warning("Please enter your username and password")
-    st.stop()
+# if auth_status is False:
+#     st.error("Username/password is incorrect")
+#     st.stop()
+# elif auth_status is None:
+#     st.warning("Please enter your username and password")
+#     st.stop()
 
-# If logged in, show logout in sidebar
-authenticator.logout(location="sidebar")
+# # If logged in, show logout in sidebar
+# authenticator.logout(location="sidebar")
 
 #=============
 # Sidebar
@@ -40,109 +41,102 @@ authenticator.logout(location="sidebar")
 # Sidebar: Random Film Button
 st.sidebar.title("Random Film Generator")
 
-st.sidebar.write("Can't decide what to watch? Let our Random Film Generator choose for you! Click the button and get a film title, IMDb rating, and duration. Enjoy your movie night! 🍿🎥")
+st.sidebar.write("""Can't decide what to watch? Let our Random Film Generator 
+                 choose for you! Click the button and let faith decide!
+                 Enjoy your movie night! 🍿🎥""")
 
-if st.sidebar.button("Generate random film!"):
-    # Check if the data is ready
-    if "filtered_data" in st.session_state:
-        # Sample one row
-        random_row = st.session_state["filtered_data"].sample(1)
+if st.sidebar.button("Random film!"):
+    def random_film ():
+        conn = sqlite3.connect("data/film_database.db")
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT *
+            FROM film_data
+            ORDER BY RANDOM()
+            LIMIT 1
+        """)
+        random_choice = cursor.fetchone()
+        conn.close()
+        return random_choice
 
-        # Extract the required data
-        random_film = random_row["Film"].iloc[0]
-        random_rating = random_row["IMDb Rating"].iloc[0]
-        random_duration = random_row["Duration"].iloc[0]
-        random_year = random_row["Year"].iloc[0]
-        random_ID = random_row["ID"].iloc[0]
+    # Run random_film()
+    random_movie = random_film()
 
-        # List of funny texts
-        funny_texts = [
-            "Reading your aura...",
-            "Taming a monkey...",
-            "Brewing some coffee...",
-            "Counting stars...",
-            "Feeding the unicorns...",
-            "Polishing the pixels...",
-            "Summoning good vibes...",
-            "Tickling the code...",
-            "Charging the flux capacitor...",
-            "Aligning the planets...",
-            "Petting the cat...",
-            "Warming up the servers...",
-            "Finding Waldo...",
-            "Herding cats...",
-            "Sharpening pencils...",
-            "Calibrating the matrix...",
-            "Baking cookies...",
-            "Inflating balloons...",
-            "Painting rainbows...",
-            "Hacking the mainframe...",
-            "Teleporting data...",
-            "Tickling the electrons...",
-            "Spinning up the hamster wheel...",
-            "Inflating the internet...",
-            "Waking up the servers...",
-            "Unleashing the magic...",
-            "Mixing the potions...",
-            "Charging the crystals...",
-            "Consulting the oracle...",
-            "Tuning the algorithms...",
-            "Rebooting the matrix...",
-            "Casting spells...",
-            "Brewing the potion...",
-            "Hunting for Easter eggs...",
-            "Rewiring the circuits...",
-            "Synchronizing the clocks...",
-            "Lubricating the gears...",
-            "Recalibrating the sensors...",
-            "Recharging the batteries...",
-            "Assembling the pixels..."
-        ]
+    # List of funny texts
+    funny_texts = [
+        "Reading your aura...",
+        "Taming a monkey...",
+        "Brewing some coffee...",
+        "Counting stars...",
+        "Feeding the unicorns...",
+        "Polishing the pixels...",
+        "Summoning good vibes...",
+        "Tickling the code...",
+        "Charging the flux capacitor...",
+        "Aligning the planets...",
+        "Petting the cat...",
+        "Warming up the servers...",
+        "Finding Waldo...",
+        "Herding cats...",
+        "Sharpening pencils...",
+        "Calibrating the matrix...",
+        "Baking cookies...",
+        "Inflating balloons...",
+        "Painting rainbows...",
+        "Hacking the mainframe...",
+        "Teleporting data...",
+        "Tickling the electrons...",
+        "Spinning up the hamster wheel...",
+        "Inflating the internet...",
+        "Waking up the servers...",
+        "Unleashing the magic...",
+        "Mixing the potions...",
+        "Charging the crystals...",
+        "Consulting the oracle...",
+        "Tuning the algorithms...",
+        "Rebooting the matrix...",
+        "Casting spells...",
+        "Brewing the potion...",
+        "Hunting for Easter eggs...",
+        "Rewiring the circuits...",
+        "Synchronizing the clocks...",
+        "Lubricating the gears...",
+        "Recalibrating the sensors...",
+        "Recharging the batteries...",
+        "Assembling the pixels..."
+    ]
 
-        # Randomly choose a funny text
-        progress_text = random.choice(funny_texts)
+    # Randomly choose a funny text
+    progress_text = random.choice(funny_texts)
 
-        # Create a progress bar
-        my_bar = st.sidebar.progress(0)
-        
-        # Randomly choose a duration between 0.1 and 2 seconds
-        duration = random.uniform(0.1, 2)
+    # Create a progress bar
+    my_bar = st.sidebar.progress(0)
+       
+    # Randomly choose a duration between 0.1 and 2 seconds
+    duration = random.uniform(0.1, 1.5)
 
-        # Calculate the sleep time per iteration
-        sleep_time = duration / 100
+    # Calculate the sleep time per iteration
+    sleep_time = duration / 100
 
-        for percent_complete in range(100):
-            time.sleep(sleep_time)
-            my_bar.progress(percent_complete + 1, text=progress_text)
+    for percent_complete in range(100):
+        time.sleep(sleep_time)
+        my_bar.progress(percent_complete + 1, text=progress_text)
 
-        time.sleep(1)
-        my_bar.empty()
-        
-        st.sidebar.write(f'''
-                         Maybe you'd like to watch **{random_film}**?
-                         
-                         **Rating: {random_rating.round(1)} | 
-                         Duration: {int(random_duration)}** |
-                         **Year: {int(random_year)}**
-                         ''')
-        
-        # Define IMDb URL
-        random_url = f'https://www.imdb.com/title/{random_ID}/'
+    time.sleep(1)
+    my_bar.empty()
 
-        st.sidebar.link_button('Visit IMDb page!', random_url)
+    st.sidebar.write(f'''
+                     Maybe you'd like to watch **{random_movie[2]}**?
+                     
+                     **Rating: {random_movie[38]} | 
+                     Duration: {random_movie[4]} min.** |
+                     **Year: {random_movie[3]}**
+                     ''')
 
-    else:
-        # Centered warning text using Markdown and CSS
-        st.sidebar.markdown(
-            """
-            <div style="text-align: center; background-color: #FFA726; padding: 10px; border: 1px solid #ffa500; border-radius: 5px; color: black;">
-                <strong>⚠️ First select filters! ⚠️</strong>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.sidebar.write('')
-        # st.sidebar.page_link("pages/1_🎬_Film_Chooser.py", label="Go to Film Chooser", icon="🎬")
+    # Define IMDb URL
+    random_url = f'https://www.imdb.com/title/{random_movie[0]}/'
+
+    st.sidebar.link_button('Visit IMDb page!', random_url)
         
 #=============
 # Content
@@ -196,6 +190,8 @@ st.write("""
 # Footer
 # ===========
 
+st.divider()
+
 # Custom CSS to adapt the footer to the browser's theme settings
 st.markdown("""
     <style>
@@ -223,7 +219,7 @@ st.markdown("""
     </style>
      <div class="footer">
          <p>The Thursday Filmday app was made possible by Midas, the man who hesitated 
-            for so long about which movie to watch that he developed a movie app in the 
+            so long to choose a movie that he developed a movie app in the 
             meantime - <a href="https://eelslap.com/" target="_blank">ADHD hyperfocus</a> - 
             <a href="https://streamlit.io/" target="_blank">Streamlit</a> - 
             <a href="https://developer.imdb.com/" target="_blank">IMDb Developer</a> and
