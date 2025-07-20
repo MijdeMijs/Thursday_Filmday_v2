@@ -225,12 +225,14 @@ else:
 st.subheader('Movie Filters', divider='violet')
 
 st.write('''
-        Because some behavior of the Thursday Filmday app drives me up the wall,
-        I'll give you two whimsical options for your filters: **(1) forget** your filters
-        when you navigate between pages. This will make the filters behave like a well-trained puppy 🐶
-        **(2) save** your filters when you navigate between pages. The filters won't reset if you return to the Film Chooser,
-        but beware! The filters will act like a mischievous gremlin 😈
-	 ''')    
+        Set your preferences and discover the perfect movie! 🎥✨ Use the filters 
+         to choose your favorite genre 🎭, set your IMDb rating ⭐, and more. 
+         Whether you're in the mood for an action-packed thriller or a heartwarming 
+         drama, these filters help you find just what you’re looking for!
+
+        👷 Trouble with stuborn filters!? Hit 'em with the wrench 🔧 and turn off 
+         *Save filters*. You're a maker!
+         ''')    
 
 #=================
 # Save toggle
@@ -526,6 +528,13 @@ if save_toggle:
 
 st.subheader('Film Suggestions', divider='violet')
 
+st.write("""🏴‍☠️ Aye, you've picked your filters, you picky pirate!
+         Now, choose how many movie suggestions you want to see, and decide 
+         on what treasure (ahem, feature) you want to sort them by! 🏆 Whether 
+         it's the highest IMDb rating ⭐ or the longest runtime ⏳, make sure 
+         the list fits your legendary taste!
+        """)
+
 left_column, right_column = st.columns(2)
 
 with left_column:
@@ -680,9 +689,19 @@ if main_genre in ['No preference for any genre...',
 
 st.divider()
 
+st.write("""🕵️‍♂️ Elementary, my dear cinephile...
+
+You have a list of suspects—I mean, *films*. But the clues don’t end here. 
+         For further investigation, I suggest heading to the scene of 
+         the crime: **IMDb**
+
+After all, every great mystery deserves a closer look... 🧐🔍
+
+""")
+
 # Select a movie
 IMDb_link = st.selectbox("Select film:", display_df['Film'].unique())
-        
+            
 # Get film ID
 ID = display_df[display_df['Film'] == IMDb_link].iloc[0, 0]
 
@@ -691,6 +710,28 @@ url = f'https://www.imdb.com/title/{ID}/'
 
 # Link button in first column
 st.link_button("Visit IMDb page!", url)
+
+#==================
+# End the pain
+#==================
+
+st.divider()
+
+st.write("""Did your movie selection turn out to be just as hopeless as your 
+         thesis ☠️!? Don't worry, it'll be over soon... Press the button 🥀⚰️ and
+         pick a random film within your movie preferences.""")
+
+if st.button('END THE PAIN 💉'):
+    end_pain = display_df.sample(1)
+
+    # Extract values from the row
+    film_title = end_pain['Film'].values[0]
+    film_year = end_pain['Year'].values[0]
+    rating = end_pain['IMDb Rating'].values[0]
+
+    # Display the film suggestion
+    st.write(f"💊 You must watch **{film_title}** ({film_year}) — IMDb {rating}/10")
+
 
 # ===========
 # Footer
