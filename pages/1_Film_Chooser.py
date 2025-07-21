@@ -538,10 +538,10 @@ st.write("""🏴‍☠️ Aye, you've picked your filters, you picky pirate!
 left_column, right_column = st.columns(2)
 
 with left_column:
-    top_n_choice = st.selectbox('Top tier list:', ['Top 100', 
-                                                   'Top 250', 
-                                                   'Top 500',
-                                                   'All'])
+
+    # Initialize session state if not already set
+    if 'selected_top_n' not in st.session_state:
+        st.session_state.selected_top_n = 'Top 100'  # Set a default value
 
     top_n_mapping = {
         'Top 100': 100,
@@ -549,22 +549,71 @@ with left_column:
         'Top 500': 500,
         'All': None
     }
-    top_n = top_n_mapping[top_n_choice]
+
+    # If save_toggle is True, save the user's selection to session_state
+    if save_toggle:
+        # Default to the saved session state value
+        default_top_n = st.session_state.get('selected_top_n', 'Top 100')
+
+        top_n_choice = st.selectbox(
+            'Top tier list:', 
+            ['Top 100', 'Top 250', 'Top 500', 'All'],
+            index=['Top 100', 'Top 250', 'Top 500', 'All'].index(default_top_n)
+        )
+
+        # Save the selection to session state
+        st.session_state.selected_top_n = top_n_choice
+
+        # Map the selection to the corresponding value
+        top_n = top_n_mapping[top_n_choice]
+
+    else:
+        top_n_choice = st.selectbox(
+            'Top tier list:', 
+            ['Top 100', 'Top 250', 'Top 500', 'All']
+            )
+        
+        # Map the selection to the corresponding value
+        top_n = top_n_mapping[top_n_choice] 
 
 with right_column:
-    # Select on column display_df is sorted
-        sort_film_df = st.selectbox("Select a movie feature:", ["IMDb rating", 
-                                                                "Year",
-                                                                "Duration",
-                                                                "Votes"])
-        
-        sort_mapping = {
+
+    # Initialize session state if not already set
+    if 'selected_sort_feature' not in st.session_state:
+        st.session_state.selected_sort_feature = 'IMDb rating'
+
+    sort_mapping = {
             'IMDb rating': 'averageRating',
             'Year': 'startYear',
             'Duration': 'runtimeMinutes',
             'Votes': 'numVotes'
         }
-        sort_column = sort_mapping[sort_film_df]
+    
+    # If save_toggle is True, save the user's selection to session_state
+    if save_toggle:
+        # Default to the saved session state value
+        default_sort_feature = st.session_state.get('selected_sort_feature', 
+                                                    'IMDb rating')
+
+        sort_feature_choice = st.selectbox(
+            'Select a movie feature:', 
+            ['IMDb rating', 'Year', 'Duration', 'Votes'],
+            index=['IMDb rating', 'Year', 'Duration', 'Votes'].index(default_sort_feature)
+        )
+
+        # Save the selection to session state
+        st.session_state.selected_sort_feature = sort_feature_choice
+
+        # Map the selection to the corresponding value
+        sort_column = sort_mapping[sort_feature_choice]
+
+    else:
+        sort_feature_choice = st.selectbox(
+            'Select a movie feature:', 
+            ['IMDb rating', 'Year', 'Duration', 'Votes']
+            )
+        sort_column = sort_mapping[sort_feature_choice]
+
 
 sort_ascending = st.toggle('Descending/ascending', value=False)
 
@@ -673,9 +722,9 @@ else:
     st.write(f'Behold! **{len(display_df)}** films that are within your chosen filters:')
     st.dataframe(display_df.iloc[:, 1:])            
 
-# ===============================
-# region No genre warning
-# ===============================
+#===============================
+# No genre warning
+#===============================
 
 if main_genre in ['No preference for any genre...', 
                   'No preference for a main genre...']:
