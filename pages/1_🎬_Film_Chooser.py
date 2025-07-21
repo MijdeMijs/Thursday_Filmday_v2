@@ -6,7 +6,6 @@ from utils.auth import get_authenticator
 import pandas as pd
 import time
 from datetime import datetime
-import gzip
 import random
 import sqlite3
 
