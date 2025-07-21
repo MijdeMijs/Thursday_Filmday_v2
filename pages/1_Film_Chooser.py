@@ -615,7 +615,20 @@ with right_column:
         sort_column = sort_mapping[sort_feature_choice]
 
 
-sort_ascending = st.toggle('Descending/ascending', value=False)
+# sort_ascending = st.toggle('Descending/ascending', value=False)
+
+# Initialize session state if not already set
+if 'sort_toggle' not in st.session_state:
+    st.session_state.sort_toggle = False  # Default to False
+
+if save_toggle:
+    default_sort_toggle = st.session_state.get('sort_toggle', False)
+
+    sort_ascending = st.toggle('Descending/ascending', value=default_sort_toggle)
+
+    st.session_state.sort_toggle = sort_ascending
+else:
+    sort_ascending = st.toggle('Descending/ascending', value=False)
 
 st.divider()
 
