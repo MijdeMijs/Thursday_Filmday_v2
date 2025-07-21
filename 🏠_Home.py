@@ -167,7 +167,7 @@ st.write("""
          movie-watching habits!
     """)
 
-# st.page_link("pages/2_📊_Movie_Stats.py", label="Go to Movie Stats", icon="📊")
+st.page_link("pages/2_📈_Movie_Stats.py", label="Go to Movie Stats", icon="📈")
 
 st.write("""
     3. **Film Archive**: Here, you can browse through a comprehensive list 
@@ -175,7 +175,7 @@ st.write("""
          reference to revisit past favorites or find new recommendations.
     """)
 
-# st.page_link("pages/3_🗂️_Film_Archieve.py", label="Go to Film Archieve", icon="🗂️")
+st.page_link("pages/3_🗃️_Film_Archieve.py", label="Go to Film Archieve", icon="🗃️")
 
 st.write("""
     I've also hidden some fun easter eggs throughout the app for you to 
